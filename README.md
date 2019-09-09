@@ -1,3 +1,9 @@
+9/9:
+完成 : 首頁書籍列表 (串API) / 詳細書籍頁面
+困難 : 第一次接觸 Hydra Database
+預計 : 修改書籍資料 / 無限捲動
+
+
 # nice to meet you
 1. 閱讀並理解 https://demo.api-platform.com/books 
 中的關於圖書的 API。
