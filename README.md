@@ -3,6 +3,11 @@
 困難 : 第一次接觸 Hydra Database
 預計 : 修改書籍資料 / 無限捲動
 
+9/10:
+完成 : 新增及編輯圖書
+困難 : 第一次使用 PUT method
+預計 : 研究 Redux
+
 
 # nice to meet you
 1. 閱讀並理解 https://demo.api-platform.com/books 
