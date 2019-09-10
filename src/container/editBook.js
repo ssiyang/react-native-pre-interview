@@ -90,16 +90,28 @@ export default class EditBook extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Text style={styles.label}>Title :</Text>
+        <TextInput
+          style={styles.smallText}
+          value={this.state.title}
+          onChangeText={(title) => this.setState({ title })}
+        />
+
+        <Text style={styles.label}>Author :</Text>
         <TextInput
           style={styles.smallText}
           value={this.state.author}
           onChangeText={(author) => this.setState({ author })}
         />
+
+        <Text style={styles.label}>Created at:</Text>
         <TextInput
           style={styles.smallText}
           value={this.state.publicationDate}
           onChangeText={(publicationDate) => this.setState({ publicationDate })}
         />
+
+        <Text style={styles.label}>Description :</Text>
         <TextInput
           style={styles.bigText}
           multiline
@@ -123,6 +135,11 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginLeft: 20,
     fontSize: 16
+  },
+  label: {
+    marginTop: 15,
+    marginLeft: 15,
+    marginRight: 15,
   },
   smallText: {
     backgroundColor: 'white',

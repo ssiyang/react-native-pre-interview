@@ -65,6 +65,9 @@ export default class BookDetail extends React.Component {
             const { navigate } = this.props.navigation;
             let response = await fetch(Api.url + this.state.id);
             let getBookDetail = await response.json();
+            this.props.navigation.setParams({
+                Title : getBookDetail.title
+            })
             this.setState({
                 author: getBookDetail.author,
                 publicationDate: getBookDetail.publicationDate,

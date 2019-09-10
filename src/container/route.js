@@ -25,7 +25,7 @@ const homeNavigator = createStackNavigator({
     BookDetail: {
         screen: BookDetail,
         navigationOptions: ({ navigation }) => ({
-            title: `${navigation.state.params.title}`
+            title: navigation.getParam('Title', `${navigation.state.params.title}`),
           }),
     },
     EditBook: {
