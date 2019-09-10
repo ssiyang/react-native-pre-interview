@@ -6,6 +6,8 @@ import { createStackNavigator } from 'react-navigation-stack'
 
 import Home from './home';
 import BookDetail from './bookDetail';
+import EditBook from './editBook'
+import AddBook from './addBook'
 
 export default class Route extends Component {
     render() {
@@ -25,7 +27,13 @@ const homeNavigator = createStackNavigator({
         navigationOptions: ({ navigation }) => ({
             title: `${navigation.state.params.title}`
           }),
-    }
+    },
+    EditBook: {
+        screen: EditBook
+    },
+    AddBook: {
+        screen: AddBook
+    },
 
 },
     {

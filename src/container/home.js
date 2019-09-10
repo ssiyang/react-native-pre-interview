@@ -19,15 +19,26 @@ export default class Home extends React.Component {
         super(props)
         this.state = {
             bookData: [],
-            BookDetail: {}
+            lastPage: '',
+            nextPage: '',
+            currentPage: ''
         }
     }
 
     static navigationOptions = ({ navigation }) => {
         return {
+            title: '圖書列表',
+            headerTitleStyle: {
+                flex: 1,
+                textAlign: 'center',
+                color: 'white',
+            },
             headerStyle: {
                 backgroundColor: '#FFAA33'
             },
+            headerLeft: (
+                <View />
+            ),
             headerRight: (
                 <TouchableOpacity
                     onPress={navigation.getParam('newBook')}
@@ -46,7 +57,10 @@ export default class Home extends React.Component {
             let response = await fetch(Api.url + `/books`);
             let responseValue = await response.json();
             this.setState({
-                bookData: responseValue['hydra:member']
+                bookData: responseValue['hydra:member'],
+                lastPage: responseValue['hydra:view']['hydra:last'],
+                nextPage: responseValue['hydra:view']['hydra:next'],
+                currentPage: responseValue['hydra:view']['@id']
             })
         }
         catch (err) {
@@ -55,7 +69,24 @@ export default class Home extends React.Component {
     }
 
     newBook = () => {
-        alert('123')
+        const { navigate } = this.props.navigation;
+        navigate('AddBook')
+    }
+
+    refreshData = async () => {
+        try {
+            let response = await fetch(Api.url + `/books`);
+            let responseValue = await response.json();
+            this.setState({
+                bookData: responseValue['hydra:member'],
+                lastPage: responseValue['hydra:view']['hydra:last'],
+                nextPage: responseValue['hydra:view']['hydra:next'],
+                currentPage: responseValue['hydra:view']['@id']
+            })
+        }
+        catch (err) {
+            console.log('err:', err)
+        }
     }
 
     onGoBookDetail = async (id) => {
@@ -63,12 +94,13 @@ export default class Home extends React.Component {
         let response = await fetch(Api.url + id);
         let getBookDetail = await response.json();
         let goBookDetail = await navigate('BookDetail', {
+            isbn: getBookDetail.isbn,
             title: getBookDetail.title,
+            description: getBookDetail.description,
             author: getBookDetail.author,
             publicationDate: getBookDetail.publicationDate,
-            description: getBookDetail.description
+            id: id
         });
-        console.log(getBookDetail.title)
     }
 
     keyExtractor = (item, index) => { return index.toString() };
@@ -92,6 +124,24 @@ export default class Home extends React.Component {
         )
     };
 
+    onGetNextPage = async () => {
+        if (this.state.currentPage !== this.state.lastPage) {
+            try {
+                let response = await fetch(Api.url + this.state.nextPage);
+                let responseValue = await response.json();
+                this.setState(prevState => ({
+                    bookData: prevState.bookData.concat(responseValue['hydra:member']),
+                    currentPage: responseValue['hydra:view']['@id'],
+                    nextPage: responseValue['hydra:view']['hydra:next']
+                }))
+            }
+            catch (err) {
+                console.log('err:', err)
+            }
+        }
+    }
+
+
     render() {
         if (this.state.bookData.length === 0) {
             return (
@@ -109,6 +159,10 @@ export default class Home extends React.Component {
                     keyExtractor={this.keyExtractor}
                     numColumns={2}
                     columnWrapperStyle={styles.row}
+                    onEndReachedThreshold={0.9}
+                    onEndReached={this.onGetNextPage}
+                    onRefresh={this.refreshData}
+                    refreshing={false}
                 />
             </View>
         );
@@ -122,7 +176,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#F5F5F5',
-
     },
     container: {
         backgroundColor: '#F5F5F5'

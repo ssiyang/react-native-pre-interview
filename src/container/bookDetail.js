@@ -5,12 +5,26 @@ import {
     View,
     ScrollView,
     TouchableOpacity,
-    Dimensions
+    Dimensions,
+    Button
 } from 'react-native';
+
+import Api from '../config/api'
 
 const width = Dimensions.get('window').width;
 
 export default class BookDetail extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            isbn: this.props.navigation.state.params.isbn,
+            title: this.props.navigation.state.params.title,
+            author: this.props.navigation.state.params.author,
+            publicationDate: this.props.navigation.state.params.publicationDate,
+            description: this.props.navigation.state.params.description,
+            id: this.props.navigation.state.params.id
+        }
+    }
 
     static navigationOptions = ({ navigation }) => {
         return {
@@ -46,13 +60,38 @@ export default class BookDetail extends React.Component {
         });
     }
 
+    refreshData = async() => {
+        try{
+            const { navigate } = this.props.navigation;
+            let response = await fetch(Api.url + this.state.id);
+            let getBookDetail = await response.json();
+            this.setState({
+                author: getBookDetail.author,
+                publicationDate: getBookDetail.publicationDate,
+                description: getBookDetail.description,
+            })
+        }
+         catch (err) {
+             console.log('err:', err)
+         }
+    }
+
     goBack = () => {
         const { goBack } = this.props.navigation;
         goBack()
     }
 
     editBook = () => {
-        alert('123')
+        const { navigate } = this.props.navigation;
+        navigate('EditBook', {
+            isbn: this.state.isbn,
+            title: this.state.title,
+            author: this.state.author,
+            publicationDate: this.state.publicationDate,
+            description: this.state.description,
+            refreshData: this.refreshData,
+            id: this.state.id
+        });
     }
 
     render() {
@@ -60,16 +99,17 @@ export default class BookDetail extends React.Component {
             <ScrollView style={styles.container}>
                 <View style={styles.author}>
                     <View style={styles.authorContainer}>
-                        <Text style={styles.authorTxt}> Author: {this.props.navigation.state.params.author}</Text>
+                        <Text style={styles.authorTxt}> Author: {this.state.author}</Text>
                     </View>
                     <View style={styles.dateContainer}>
-                        <Text style={styles.dateTxt}> {this.props.navigation.state.params.publicationDate.substring(0, 10)}</Text>
+                        <Text style={styles.dateTxt}> {this.state.publicationDate.substring(0, 10)}</Text>
                     </View>
                 </View>
 
                 <View>
-                    <Text style={styles.descriptionTxt}>{this.props.navigation.state.params.description}</Text>
+                    <Text style={styles.descriptionTxt}>{this.state.description}</Text>
                 </View>
+
             </ScrollView>
         );
     }
@@ -106,7 +146,7 @@ const styles = StyleSheet.create({
     authorTxt: {
         color: '#888888',
         marginLeft: 20,
-        
+
     },
     dateTxt: {
         color: '#888888',
