@@ -69,6 +69,7 @@ export default class BookDetail extends React.Component {
                 Title : getBookDetail.title
             })
             this.setState({
+                title: getBookDetail.title,
                 author: getBookDetail.author,
                 publicationDate: getBookDetail.publicationDate,
                 description: getBookDetail.description,
