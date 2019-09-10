@@ -54,7 +54,13 @@ export default class Home extends React.Component {
             newBook: this.newBook
         });
         try {
-            let response = await fetch(Api.url + `/books`);
+            let response = await fetch(Api.url + `/books`, {
+                method: 'GET',
+                headers: {
+                  Accept: 'application/ld+json',
+                  'Content-Type': 'application/ld+json',
+                }});
+                
             let responseValue = await response.json();
             this.setState({
                 bookData: responseValue['hydra:member'],
